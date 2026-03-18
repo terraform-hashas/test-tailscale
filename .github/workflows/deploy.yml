@@ -5,24 +5,24 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
     steps:
-      # 1. Récupère ton code depuis le dépôt GitHub
+      # 1. Récupère ton code (main.tf)
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 2. Installe l'outil Terraform sur le serveur GitHub (indispensable)
+      # 2. Installe Terraform sur le serveur GitHub
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.7.0"
           terraform_wrapper: false
 
-      # 3. Connecte le serveur GitHub à ton réseau privé via Tailscale
+      # 3. Connecte le tunnel Tailscale
       - name: Connect to Tailscale
         uses: tailscale/github-action@v2
         with:
           authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
 
-      # 4. Initialise et applique la configuration Terraform vers ton Proxmox
+      # 4. Exécute les commandes Terraform
       - name: Terraform Apply
         env:
           PM_API_TOKEN_ID: ${{ secrets.PM_API_TOKEN_ID }}
