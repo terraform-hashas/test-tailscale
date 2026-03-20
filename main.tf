@@ -37,7 +37,7 @@ resource "proxmox_virtual_environment_vm" "vm_test" {
     ip_config {
       ipv4 {
         address = "192.168.192.55/18" # IP fixe dans ton subnet
-        gateway = "192.168.192.1"
+        gateway = "192.168.192.5"
       }
     }
 
