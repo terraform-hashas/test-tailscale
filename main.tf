@@ -76,12 +76,6 @@ resource "proxmox_virtual_environment_vm" "vm_test" {
       keys     = [var.ssh_public_key]
     }
   }
-
-  timeouts {
-    create = "15m"
-    update = "10m"
-    delete = "5m"
-  }
 }
 
 variable "proxmox_api_url" {
