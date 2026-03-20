@@ -24,7 +24,7 @@ resource "proxmox_virtual_environment_vm" "vm_test" {
   }
 
   network_device {
-    bridge = "vmbr0"
+    bridge = "vmbr2" # Bridge privé pour Tailscale
   }
 
   disk {
@@ -32,18 +32,24 @@ resource "proxmox_virtual_environment_vm" "vm_test" {
     interface    = "scsi0"
     size         = 25
   }
+
+  initialization {
+    ip_config {
+      ipv4 {
+        address = "192.168.192.55/18" # IP fixe dans ton subnet
+        gateway = "192.168.192.1"
+      }
+    }
+
+    user_account {
+      username = "ubuntu"
+      keys     = [var.ssh_public_key] # Utilise le secret GitHub
+    }
+  }
 }
 
-# --- BLOC VARIABLES CORRIGÉ ---
-variable "proxmox_api_url" {
-  type = string
-}
-
-variable "proxmox_api_token_id" {
-  type = string
-}
-
-variable "proxmox_api_token_secret" {
-  type      = string
-  sensitive = true
-}
+# --- DÉCLARATION DES VARIABLES ---
+variable "proxmox_api_url" { type = string }
+variable "proxmox_api_token_id" { type = string }
+variable "proxmox_api_token_secret" { type = string; sensitive = true }
+variable "ssh_public_key" { type = string }
