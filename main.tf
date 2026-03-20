@@ -21,6 +21,7 @@ resource "proxmox_virtual_environment_vm" "vm_test" {
   clone {
     vm_id = 9000
     full  = false 
+    retries = 3    # Ajoute cette ligne pour laisser le temps à Proxmox
   }
 
   network_device {
