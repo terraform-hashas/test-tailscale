@@ -23,7 +23,6 @@
 ---
 
 ## 📐 Architecture
-
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  Poste Dev (Ubuntu Management VM)                           │
@@ -31,8 +30,7 @@
 └─────────────────────────┬───────────────────────────────────┘
                           │
                           ▼
-                   GitHub Actions
-                   Runner (cloud)
+                   GitHub Actions Runner
                           │
               ┌───────────┴───────────┐
               │                       │
@@ -43,8 +41,7 @@
               └───────────┬───────────┘
                           │ Tailscale mesh VPN
                           ▼
-                  Proxmox Hetzner
-                  (100.108.39.48)
+                  Proxmox Hetzner (100.108.39.48)
                   subnet: 192.168.192.0/18
                           │
                           ▼
@@ -59,7 +56,6 @@
 ---
 
 ## 🔄 Pipeline CI/CD
-
 ```
 git push (poste dev)
     │
@@ -84,7 +80,7 @@ GitHub Actions Runner
                         └── Start + enable  ✅
 ```
 
-**Sur PR** → Checkov + Trivy uniquement (pas d'apply)
+**Sur PR** → Checkov + Trivy uniquement (pas d'apply)  
 **Sur push `main`** → Pipeline complet
 
 ---
@@ -111,7 +107,6 @@ GitHub Actions Runner
 ---
 
 ## 📁 Structure du projet
-
 ```
 test-tailscale/
 ├── .github/
@@ -126,7 +121,7 @@ test-tailscale/
 
 ---
 
-## 🔐 Secrets GitHub configurés
+## 🔐 Secrets GitHub
 
 | Secret | Rôle |
 |---|---|
@@ -148,15 +143,13 @@ test-tailscale/
 - Template Ubuntu 22.04 cloud-init (VM ID 9000)
 - Token API Proxmox (`root@pam!terraform`)
 - Workspace Terraform Cloud en mode **Local execution**
-- Subnet routing Tailscale activé sur le node Proxmox
-
+- Subnet routing Tailscale activé sur Proxmox
 ```bash
 # Sur Proxmox — activer le subnet routing
 tailscale up --advertise-routes=192.168.192.0/18 --accept-routes
 ```
 
 ### Lancement
-
 ```bash
 git clone https://github.com/bhashas/test-tailscale
 cd test-tailscale
@@ -165,14 +158,12 @@ git push origin main
 ```
 
 ### Résultat
-
 ```bash
 curl http://192.168.192.55
-# → <!DOCTYPE html>
-#   <h1>Pipeline OK</h1>
-#   <p>VM : vm-test-tailscale-bpg</p>
-#   <p>IP : 192.168.192.55</p>
-#   <p>Deploye via GitHub Actions + Terraform + Ansible</p>
+# → <h1>Pipeline OK</h1>
+# → <p>VM : vm-test-tailscale-bpg</p>
+# → <p>IP : 192.168.192.55</p>
+# → <p>Deploye via GitHub Actions + Terraform + Ansible</p>
 ```
 
 ---
