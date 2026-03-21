@@ -5,7 +5,6 @@ on:
       - main
 
 jobs:
-  # ── JOB 1 : Security Scan ──────────────────────────────────
   security-scan:
     name: Checkov + Trivy
     runs-on: ubuntu-latest
@@ -43,7 +42,6 @@ jobs:
         with:
           sarif_file: trivy.sarif
 
-  # ── JOB 2 : Terraform + Ansible ───────────────────────────
   deploy:
     name: Terraform + Ansible
     runs-on: ubuntu-latest
@@ -62,6 +60,11 @@ jobs:
         with:
           authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
 
+      - name: Setup Terraform Cloud token
+        run: |
+          mkdir -p ~/.terraform.d
+          echo '{"credentials":{"app.terraform.io":{"token":"${{ secrets.TF_API_TOKEN }}"}}}' > ~/.terraform.d/credentials.tfrc.json
+
       - name: Terraform Init + Apply
         env:
           TF_VAR_proxmox_api_url: ${{ secrets.PM_API_URL }}
@@ -69,11 +72,6 @@ jobs:
           TF_VAR_proxmox_api_token_secret: ${{ secrets.PM_API_TOKEN_SECRET }}
           TF_VAR_ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}
         run: |
-      - name: Setup Terraform Cloud token
-        run: |
-          mkdir -p ~/.terraform.d
-          echo '{"credentials":{"app.terraform.io":{"token":"${{ secrets.TF_API_TOKEN }}"}}}' > ~/.terraform.d/credentials.tfrc.json
-
           terraform init
           terraform apply -auto-approve
 
@@ -95,30 +93,3 @@ jobs:
             -i ansible/inventory.ini \
             --private-key ~/.ssh/id_ed25519 \
             -v
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
