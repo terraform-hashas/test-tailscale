@@ -76,7 +76,7 @@ jobs:
           terraform apply -auto-approve -refresh=false
 
       - name: Wait for VM to be ready
-        run: sleep 30
+        run: sleep 90
 
       - name: Setup SSH key
         run: |
