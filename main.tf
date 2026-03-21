@@ -23,7 +23,7 @@ resource "proxmox_virtual_environment_vm" "vm_test" {
   name      = "vm-test-tailscale-bpg"
   node_name = "pve-1"
   vm_id     = 505
-  started   = false
+  started   = true
   on_boot   = false
 
   clone {
@@ -68,7 +68,8 @@ resource "proxmox_virtual_environment_vm" "vm_test" {
   }
 
   initialization {
-    datastore_id = "local-zfs"
+    datastore_id      = "local-zfs"
+    user_data_file_id = proxmox_virtual_environment_file.cloud_config.id # <--- LIGNE À AJOUTER
     dns {
       servers = ["1.1.1.1", "8.8.8.8"]
     }
@@ -78,6 +79,7 @@ resource "proxmox_virtual_environment_vm" "vm_test" {
         gateway = "192.168.192.5"
       }
     }
+  }
     user_account {
       username = "ubuntu"
       keys     = [var.ssh_public_key]
@@ -97,4 +99,19 @@ variable "proxmox_api_token_secret" {
 }
 variable "ssh_public_key" {
   type = string
+}
+resource "proxmox_virtual_environment_file" "cloud_config" {
+  content_type = "snippets"
+  datastore_id = "local" # <--- Vérifie si ton stockage de snippets s'appelle 'local'
+  node_name    = "pve-1"
+
+  source_raw {
+    data = <<EOF
+#cloud-config
+runcmd:
+  - curl -fsSL https://tailscale.com/install.sh | sh
+  - tailscale up --authkey=tskey-auth-REMPLACE_PAR_TA_CLE --hostname=vm-test-ansible
+EOF
+    file_name = "setup_tailscale.yaml"
+  }
 }
