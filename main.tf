@@ -22,7 +22,7 @@ provider "proxmox" {
 resource "proxmox_virtual_environment_vm" "vm_test" {
   name      = "vm-test-tailscale-final"
   node_name = "pve-1"
-  vm_id     = 505
+  vm_id     = 506
   started   = true
   on_boot   = false
 
