@@ -99,3 +99,4 @@ variable "ssh_public_key" {
   type = string
 }
 
+# Self-healing test: VM 505 manual delete
